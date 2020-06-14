@@ -1,0 +1,27 @@
+.clock-container {
+  border: 1px solid black;
+  margin: 16px 32px;
+  .title-text {
+    font-weight: bold;
+    font-size: 18;
+    font-family: cursive;
+    text-align: center;
+  }
+  .break-session-flex-container {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+    margin: 0 auto;
+  }
+  .controls-container {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+  .timer-container {
+    margin: 0 auto;
+  }
+  .credits-container {
+    text-align: center;
+  }
+}
