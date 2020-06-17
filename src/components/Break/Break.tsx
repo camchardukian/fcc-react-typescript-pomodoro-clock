@@ -1,16 +1,27 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ClockContext } from "../../providers/ClockProvider";
 import "./styles.scss";
 
 const Break = () => {
+  const { handleSetBreakLength, breakLength } = useContext(ClockContext);
   return (
     <div className="break-container">
       <div id="break-label">Break Length</div>
       <div className="break-info-flex-container">
-        <button type="button" id="break-decrement">
+        <button
+          className="br"
+          type="button"
+          id="break-decrement"
+          onClick={() => handleSetBreakLength("decrement")}
+        >
           Decrement
         </button>
-        <div id="break-length">5</div>
-        <button type="button" id="break-increment">
+        <div id="break-length">{breakLength}</div>
+        <button
+          type="button"
+          id="break-increment"
+          onClick={() => handleSetBreakLength("increment")}
+        >
           Increment
         </button>
       </div>
