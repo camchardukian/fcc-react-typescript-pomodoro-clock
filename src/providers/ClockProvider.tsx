@@ -8,11 +8,19 @@ import React, {
 type Context = {
   breakLength: number;
   sessionLength: number;
+  timerLength: number;
+  timerIsRunning: boolean;
+  timerIsDecrementing: boolean;
   setBreakLength: Dispatch<SetStateAction<number>>;
   setSessionLength: Dispatch<SetStateAction<number>>;
+  setTimerLength: Dispatch<SetStateAction<number>>;
+  setTimerIsRunning: Dispatch<SetStateAction<boolean>>;
+  setTimerIsDecrementing: Dispatch<SetStateAction<boolean>>;
   setContext: Dispatch<SetStateAction<Context>>;
   handleSetBreakLength: (opType: string) => void;
   handleSetSessionLength: (opType: string) => void;
+  handleSetTimerIsRunning: () => void;
+  handleIntervalDecrementingTimer: () => void;
 };
 
 type Props = {
@@ -22,13 +30,21 @@ type Props = {
 const initialContext: Context = {
   breakLength: 5,
   sessionLength: 25,
+  timerLength: 0,
+  timerIsRunning: true,
+  timerIsDecrementing: false,
   setBreakLength: (): void => {},
   setSessionLength: (): void => {},
+  setTimerLength: (): void => {},
+  setTimerIsRunning: (): void => {},
+  setTimerIsDecrementing: (): void => {},
   setContext: (): void => {
     throw new Error("setContext function must be overridden.");
   },
   handleSetBreakLength: (): void => {},
-  handleSetSessionLength: (): void => {}
+  handleSetSessionLength: (): void => {},
+  handleSetTimerIsRunning: (): void => {},
+  handleIntervalDecrementingTimer: (): void => {}
 };
 
 const ClockContext = createContext<Context>(initialContext);
@@ -37,9 +53,11 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
   const [contextState, setContext] = useState<Context>(initialContext);
   const [breakLength, setBreakLength] = useState<number>(5);
   const [sessionLength, setSessionLength] = useState<number>(25);
+  const [timerIsRunning, setTimerIsRunning] = useState<boolean>(true);
+  const [timerLength, setTimerLength] = useState<number>(0);
+  const [intervalId, setIntervalId] = useState<any>();
 
   const handleSetBreakLength = (opType: string) => {
-    console.log("rrrrrr");
     if (opType === "increment" && breakLength <= 59) {
       setBreakLength(breakLength + 1);
     }
@@ -49,13 +67,27 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
   };
 
   const handleSetSessionLength = (opType: string) => {
-    console.log("rrrrrr");
     if (opType === "increment" && sessionLength <= 59) {
       setSessionLength(sessionLength + 1);
     }
     if (opType === "decrement" && sessionLength >= 2) {
       setSessionLength(sessionLength - 1);
     }
+  };
+
+  const handleSetTimerIsRunning = () => {
+    setTimerIsRunning(!timerIsRunning);
+    if (timerIsRunning) {
+      const myInterval = setInterval(handleDecrementTimerLength, 1000);
+      setIntervalId(myInterval);
+      return myInterval;
+    } else {
+      clearInterval(intervalId);
+    }
+  };
+
+  const handleDecrementTimerLength = () => {
+    setTimerLength(timerLength => timerLength - 1);
   };
 
   return (
@@ -65,10 +97,15 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
         setContext,
         breakLength,
         sessionLength,
+        timerIsRunning,
+        timerLength,
         setBreakLength,
+        setTimerIsRunning,
+        setTimerLength,
         setSessionLength,
         handleSetBreakLength,
-        handleSetSessionLength
+        handleSetSessionLength,
+        handleSetTimerIsRunning
       }}
     >
       {children}
