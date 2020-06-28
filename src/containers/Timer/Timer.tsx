@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { ClockContext } from "../../providers/ClockProvider";
 
 import "./styles.scss";

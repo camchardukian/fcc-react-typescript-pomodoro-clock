@@ -22,6 +22,7 @@ type Context = {
   handleSetSessionLength: (opType: string) => void;
   handleSetTimerIsRunning: () => void;
   handleIntervals: () => void;
+  handleResetTimer: () => void;
 };
 
 type Props = {
@@ -46,7 +47,8 @@ const initialContext: Context = {
   handleSetBreakLength: (): void => {},
   handleSetSessionLength: (): void => {},
   handleSetTimerIsRunning: (): void => {},
-  handleIntervals: (): void => {}
+  handleIntervals: (): void => {},
+  handleResetTimer: (): void => {}
 };
 
 const ClockContext = createContext<Context>(initialContext);
@@ -104,7 +106,7 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
     }
   };
 
-  const handleDecrementTimerLength = (breakLength: number) => {
+  const handleDecrementTimerLength = () => {
     setTimerLength(prevState => prevState - 1);
   };
   useEffect(() => {
@@ -117,7 +119,22 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
         setTypeOfTimerCurrentlyRunning("Session");
       }
     }
-  }, [intervalId, timerLength]);
+  }, [
+    intervalId,
+    timerLength,
+    breakLength,
+    sessionLength,
+    typeOfTimerCurrentlyRunning
+  ]);
+
+  const handleResetTimer = () => {
+    setBreakLength(5);
+    setSessionLength(25);
+    setTimerLength(25);
+    setTypeOfTimerCurrentlyRunning("Session");
+    setTimerIsRunning(true);
+    clearInterval(intervalId);
+  };
 
   return (
     <ClockContext.Provider
@@ -135,7 +152,8 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
         setSessionLength,
         handleSetBreakLength,
         handleSetSessionLength,
-        handleSetTimerIsRunning
+        handleSetTimerIsRunning,
+        handleResetTimer
       }}
     >
       {children}
