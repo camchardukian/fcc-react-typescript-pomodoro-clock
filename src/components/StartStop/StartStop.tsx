@@ -3,10 +3,10 @@ import { ClockContext } from "../../providers/ClockProvider";
 import "./styles.scss";
 
 const StartStop = () => {
-  const { handleSetTimerIsRunning } = useContext(ClockContext);
+  const { handleSetTimerIsStopped } = useContext(ClockContext);
   return (
     <div className="start-stop-container">
-      <button id="start_stop" onClick={handleSetTimerIsRunning}>
+      <button id="start_stop" onClick={handleSetTimerIsStopped}>
         Start/Stop
       </button>
     </div>

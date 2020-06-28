@@ -10,17 +10,19 @@ type Context = {
   breakLength: number;
   sessionLength: number;
   timerLength: number;
-  timerIsRunning: boolean;
+  formattedTimerLength: string;
+  timerIsStopped: boolean;
   typeOfTimerCurrentlyRunning: string;
   setBreakLength: Dispatch<SetStateAction<number>>;
   setSessionLength: Dispatch<SetStateAction<number>>;
   setTimerLength: Dispatch<SetStateAction<number>>;
-  setTimerIsRunning: Dispatch<SetStateAction<boolean>>;
+  setFormattedTimerLength: Dispatch<SetStateAction<string>>;
+  setTimerIsStopped: Dispatch<SetStateAction<boolean>>;
   setTypeOfTimerCurrentlyRunning: Dispatch<SetStateAction<string>>;
   setContext: Dispatch<SetStateAction<Context>>;
   handleSetBreakLength: (opType: string) => void;
   handleSetSessionLength: (opType: string) => void;
-  handleSetTimerIsRunning: () => void;
+  handleSetTimerIsStopped: () => void;
   handleIntervals: () => void;
   handleResetTimer: () => void;
 };
@@ -33,12 +35,14 @@ const initialContext: Context = {
   breakLength: 5,
   sessionLength: 25,
   timerLength: 0,
-  timerIsRunning: true,
+  formattedTimerLength: "25:00",
+  timerIsStopped: true,
   typeOfTimerCurrentlyRunning: "",
   setBreakLength: (): void => {},
   setSessionLength: (): void => {},
   setTimerLength: (): void => {},
-  setTimerIsRunning: (): void => {},
+  setFormattedTimerLength: (): void => {},
+  setTimerIsStopped: (): void => {},
   setTypeOfTimerCurrentlyRunning: (): void => {},
   setContext: (): void => {
     throw new Error("setContext function must be overridden.");
@@ -46,7 +50,7 @@ const initialContext: Context = {
 
   handleSetBreakLength: (): void => {},
   handleSetSessionLength: (): void => {},
-  handleSetTimerIsRunning: (): void => {},
+  handleSetTimerIsStopped: (): void => {},
   handleIntervals: (): void => {},
   handleResetTimer: (): void => {}
 };
@@ -57,13 +61,16 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
   const [contextState, setContext] = useState<Context>(initialContext);
   const [breakLength, setBreakLength] = useState<number>(5);
   const [sessionLength, setSessionLength] = useState<number>(25);
-  const [timerIsRunning, setTimerIsRunning] = useState<boolean>(true);
-  const [timerLength, setTimerLength] = useState<number>(0);
+  const [timerIsStopped, setTimerIsStopped] = useState<boolean>(true);
+  const [timerLength, setTimerLength] = useState<number>(25);
+  const [formattedTimerLength, setFormattedTimerLength] = useState<string>(
+    "25:00"
+  );
   const [intervalId, setIntervalId] = useState<any>();
   const [
     typeOfTimerCurrentlyRunning,
     setTypeOfTimerCurrentlyRunning
-  ] = useState<string>("");
+  ] = useState<string>("Session");
 
   const handleSetBreakLength = (opType: string) => {
     if (opType === "increment" && breakLength <= 59) {
@@ -77,21 +84,39 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
   const handleSetSessionLength = (opType: string) => {
     if (opType === "increment" && sessionLength <= 59) {
       setSessionLength(sessionLength + 1);
-    }
-    if (opType === "decrement" && sessionLength >= 2) {
+    } else if (opType === "decrement" && sessionLength >= 2) {
       setSessionLength(sessionLength - 1);
+    }
+    if (timerIsStopped) {
+      if (opType === "increment") {
+        setTimerLength(sessionLength + 1);
+        handleSetFormattedTimerLength(sessionLength + 1);
+      } else if (opType === "decrement") {
+        setTimerLength(sessionLength - 1);
+        handleSetFormattedTimerLength(sessionLength - 1);
+      }
     }
   };
 
-  const handleSetTimerIsRunning = () => {
-    setTimerIsRunning(!timerIsRunning);
-    setTimerInitialValue();
+  const handleSetFormattedTimerLength = (duration: number) => {
+    const mins = Math.floor((duration % 3600) / 60);
+    const secs = Math.floor(duration % 60);
+    let formattedTime = "";
+
+    formattedTime += "" + mins + ":" + (secs < 10 ? "0" : "");
+    formattedTime += "" + secs;
+    setFormattedTimerLength(formattedTime);
+  };
+
+  const handleSetTimerIsStopped = () => {
+    setTimerIsStopped(!timerIsStopped);
+    handleSetTimerInitialValue();
     handleIntervals();
   };
 
   const handleIntervals = () => {
-    if (timerIsRunning) {
-      var myInterval = setInterval(handleDecrementTimerLength, 80);
+    if (timerIsStopped) {
+      var myInterval = setInterval(handleDecrementTimerLength, 1000);
       setIntervalId(myInterval);
       return myInterval;
     } else {
@@ -99,18 +124,18 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
     }
   };
 
-  const setTimerInitialValue = () => {
-    if (timerIsRunning && timerLength === 0) {
-      setTimerLength(sessionLength);
-      setTypeOfTimerCurrentlyRunning("Session");
+  const handleSetTimerInitialValue = () => {
+    if (timerIsStopped && timerLength === 0) {
+      setTimerLength(sessionLength * 60);
     }
   };
 
   const handleDecrementTimerLength = () => {
-    setTimerLength(prevState => prevState - 1);
+    setTimerLength(prevState => prevState - Math.round((1 / 60) * 1000) / 1000);
+    handleSetFormattedTimerLength(timerLength * 60 - 1);
   };
   useEffect(() => {
-    if (timerLength <= 0) {
+    if (timerLength <= 0 && !timerIsStopped) {
       if (typeOfTimerCurrentlyRunning === "Session") {
         setTimerLength(breakLength);
         setTypeOfTimerCurrentlyRunning("Break");
@@ -123,16 +148,22 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
     intervalId,
     timerLength,
     breakLength,
+    timerIsStopped,
     sessionLength,
     typeOfTimerCurrentlyRunning
   ]);
+
+  useEffect(() => {
+    handleSetFormattedTimerLength(timerLength * 60);
+  }, [timerLength]);
 
   const handleResetTimer = () => {
     setBreakLength(5);
     setSessionLength(25);
     setTimerLength(25);
+    setFormattedTimerLength("25:00");
     setTypeOfTimerCurrentlyRunning("Session");
-    setTimerIsRunning(true);
+    setTimerIsStopped(true);
     clearInterval(intervalId);
   };
 
@@ -143,17 +174,18 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
         setContext,
         breakLength,
         sessionLength,
-        timerIsRunning,
+        timerIsStopped,
         typeOfTimerCurrentlyRunning,
         timerLength,
         setBreakLength,
-        setTimerIsRunning,
+        setTimerIsStopped,
         setTimerLength,
         setSessionLength,
         handleSetBreakLength,
         handleSetSessionLength,
-        handleSetTimerIsRunning,
-        handleResetTimer
+        handleSetTimerIsStopped,
+        handleResetTimer,
+        formattedTimerLength
       }}
     >
       {children}
