@@ -11,7 +11,7 @@ const Timer = () => {
     timerIsStopped
   } = useContext(ClockContext);
   useEffect(() => {
-    if (formattedTimerLength === "0:00") {
+    if (formattedTimerLength === "00:00") {
       if (document.getElementById("beep")) {
         const beepAudio: any = document.getElementById("beep");
         beepAudio.play();
