@@ -88,10 +88,10 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
       setSessionLength(sessionLength - 1);
     }
     if (timerIsStopped) {
-      if (opType === "increment") {
+      if (opType === "increment" && sessionLength <= 59) {
         setTimerLength(sessionLength + 1);
         handleSetFormattedTimerLength(sessionLength + 1);
-      } else if (opType === "decrement") {
+      } else if (opType === "decrement" && sessionLength >= 2) {
         setTimerLength(sessionLength - 1);
         handleSetFormattedTimerLength(sessionLength - 1);
       }
