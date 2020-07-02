@@ -99,12 +99,16 @@ const ClockContextProvider = ({ children }: Props): JSX.Element => {
   };
 
   const handleSetFormattedTimerLength = (duration: number) => {
-    const mins = Math.floor((duration % 3600) / 60);
-    const secs = Math.floor(duration % 60);
     let formattedTime = "";
-
-    formattedTime += "" + mins + ":" + (secs < 10 ? "0" : "");
-    formattedTime += "" + secs;
+    if (duration === 3600) {
+      formattedTime = "60:00";
+    } else {
+      const mins = Math.floor((duration % 3600) / 60);
+      const secs = Math.floor(duration % 60);
+      formattedTime +=
+        (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "");
+      formattedTime += "" + secs;
+    }
     setFormattedTimerLength(formattedTime);
   };
 
