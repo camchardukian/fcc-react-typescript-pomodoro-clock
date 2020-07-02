@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/fcc-react-typescript-pomodoro-clock/static/css/main.53f9333a.chunk.css",
+    "main.js": "/fcc-react-typescript-pomodoro-clock/static/js/main.230689e8.chunk.js",
+    "main.js.map": "/fcc-react-typescript-pomodoro-clock/static/js/main.230689e8.chunk.js.map",
+    "runtime-main.js": "/fcc-react-typescript-pomodoro-clock/static/js/runtime-main.90d7ee4f.js",
+    "runtime-main.js.map": "/fcc-react-typescript-pomodoro-clock/static/js/runtime-main.90d7ee4f.js.map",
+    "static/js/2.e0fda0d4.chunk.js": "/fcc-react-typescript-pomodoro-clock/static/js/2.e0fda0d4.chunk.js",
+    "static/js/2.e0fda0d4.chunk.js.map": "/fcc-react-typescript-pomodoro-clock/static/js/2.e0fda0d4.chunk.js.map",
+    "index.html": "/fcc-react-typescript-pomodoro-clock/index.html",
+    "precache-manifest.4e21060c04eaf6d7f09e2501bf487a41.js": "/fcc-react-typescript-pomodoro-clock/precache-manifest.4e21060c04eaf6d7f09e2501bf487a41.js",
+    "service-worker.js": "/fcc-react-typescript-pomodoro-clock/service-worker.js",
+    "static/css/main.53f9333a.chunk.css.map": "/fcc-react-typescript-pomodoro-clock/static/css/main.53f9333a.chunk.css.map",
+    "static/js/2.e0fda0d4.chunk.js.LICENSE.txt": "/fcc-react-typescript-pomodoro-clock/static/js/2.e0fda0d4.chunk.js.LICENSE.txt",
+    "static/media/bell.mp3": "/fcc-react-typescript-pomodoro-clock/static/media/bell.03c4155a.mp3"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.90d7ee4f.js",
+    "static/js/2.e0fda0d4.chunk.js",
+    "static/css/main.53f9333a.chunk.css",
+    "static/js/main.230689e8.chunk.js"
+  ]
+}
