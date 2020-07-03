@@ -1,3 +1,7 @@
+This repo contains a pomodoro clock I built using React Context and TypeScript to complete the final (5th of 5 challenges) necessary to earn FreeCodeCamp's Front End Libraries Certificate.
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
