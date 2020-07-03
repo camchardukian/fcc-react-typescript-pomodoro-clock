@@ -3,12 +3,11 @@ import { ClockContext } from "../../providers/ClockProvider";
 // @ts-ignore
 import bell from "../../assets/audio/bell.mp3";
 import "./styles.scss";
-
 const Timer = () => {
   const {
     typeOfTimerCurrentlyRunning,
     formattedTimerLength,
-    timerIsStopped
+    resetTimerSoundCount
   } = useContext(ClockContext);
   useEffect(() => {
     if (formattedTimerLength === "00:00") {
@@ -17,14 +16,14 @@ const Timer = () => {
         beepAudio.play();
       }
     }
-    if (timerIsStopped && formattedTimerLength === "25:00") {
-      if (document.getElementById("beep")) {
-        const beepAudio: any = document.getElementById("beep");
-        beepAudio.pause();
-        beepAudio.currentTime = 0;
-      }
+  }, [formattedTimerLength]);
+  useEffect(() => {
+    if (document.getElementById("beep")) {
+      const beepAudio: any = document.getElementById("beep");
+      beepAudio.pause();
+      beepAudio.currentTime = 0;
     }
-  }, [formattedTimerLength, timerIsStopped]);
+  }, [resetTimerSoundCount]);
   return (
     <div className="timer-container">
       <div id="timer-label">{typeOfTimerCurrentlyRunning}</div>
@@ -33,5 +32,4 @@ const Timer = () => {
     </div>
   );
 };
-
 export default Timer;
